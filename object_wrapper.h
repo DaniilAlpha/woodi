@@ -1,3 +1,6 @@
+#ifndef OBJECT_WRAPPER_H
+#define OBJECT_WRAPPER_H
+
 #define wrapper(Self, contents_macro)                                          \
     typedef struct Self Self;                                                  \
     typedef struct Self##Impl contents_macro(Self) Self##Impl;                 \
@@ -15,3 +18,5 @@
 
 #define wrapper_call(fn, wrapper, ...)                                         \
     (wrapper)->vtbl->fn((wrapper)->self, __VA_ARGS__)
+
+#endif
