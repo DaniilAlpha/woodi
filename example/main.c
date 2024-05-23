@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-#include <object_wrapper.h>
+#include <woodi.h>
 
 // defining a wrapper
 
 #define logger_wrapper(Self)                                                   \
     { int (*const log)(Self *const self, char *const str); }
 
-wrapper(Logger, logger_wrapper);
+WRAPPER(Logger, logger_wrapper);
 
 #define logger_log(self, str) wrapper_call(log, self, str)
 
@@ -33,7 +33,7 @@ int simple_logger_log(SimpleLogger *const self, char *const str) {
 // wrap SimpleLogger (with) Logger (implementing) logger_wrapper, (call it)
 // simple_logger_ww_logger, (with such functions:) { .log = simple_logger_log }
 // if you wonder, 'ww' stands for 'wrap with'
-wrap(
+WRAP(
     SimpleLogger,
     Logger,
     logger_wrapper,
