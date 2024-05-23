@@ -7,7 +7,7 @@
         Private##Self##Impl;                                                   \
     struct Self {                                                              \
         Private##Self##Impl const *vtbl;                                 \
-        void const *self;                                                      \
+        void *self;                                                      \
     }
 
 #define WRAP(Self, Wrapper, interface_macro, fn_name, ...)                     \
