@@ -6,7 +6,7 @@
     typedef struct Private##Self##Impl interface_macro(Self)                   \
         Private##Self##Impl;                                                   \
     struct Self {                                                              \
-        Private##Self##Impl const *const vtbl;                                 \
+        Private##Self##Impl *const vtbl;                                 \
         void *const self;                                                      \
     }
 
