@@ -17,6 +17,6 @@
     void ___i_want_you_to_put_semicolon_here_please()
 
 #define wrapper_call(fn, wrapper, ...)                                         \
-    (wrapper)->vtbl->fn((wrapper)->self, __VA_ARGS__)
+    (wrapper)->vtbl->fn((wrapper)->self, ##__VA_ARGS__)
 
 #endif
