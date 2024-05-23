@@ -6,8 +6,8 @@
     typedef struct Private##Self##Impl interface_macro(Self)                   \
         Private##Self##Impl;                                                   \
     struct Self {                                                              \
-        Private##Self##Impl *const vtbl;                                 \
-        void *const self;                                                      \
+        Private##Self##Impl const *vtbl;                                 \
+        void const *self;                                                      \
     }
 
 #define WRAP(Self, Wrapper, interface_macro, fn_name, ...)                     \
