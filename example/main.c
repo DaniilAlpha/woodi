@@ -4,12 +4,14 @@
 
 // defining a wrapper
 
-#define logger_wrapper(Self)                                                   \
+#define LOGGER_INTERFACE(Self)                                                 \
     { int (*const log)(Self *const self, char *const str); }
 
-WRAPPER(Logger, logger_wrapper);
+WRAPPER(Logger, LOGGER_INTERFACE);
 
-#define logger_log(self, str) wrapper_call(log, self, str)
+// you may want to define a function if you want. i prefer macros because they
+// are shorter
+#define logger_log(self, str) WRAPPER_CALL(log, self, str)
 
 // defining implementations
 
@@ -30,14 +32,13 @@ int simple_logger_log(SimpleLogger *const self, char *const str) {
 
 // wrapping
 
-// wrap SimpleLogger (with) Logger (implementing) logger_wrapper, (call it)
-// simple_logger_ww_logger, (with such functions:) { .log = simple_logger_log }
-// if you wonder, 'ww' stands for 'wrap with'
-WRAP(
-    SimpleLogger,
+// you declare a function, which body is provided by `WRAP_BODY` macro. you may
+// want to declare it in header and define in source or to define as `inline` in
+// header and declare as `extern` in source
+Logger simple_logger_ww_logger(SimpleLogger *const self) WRAP_BODY(
     Logger,
-    logger_wrapper,
-    simple_logger_ww_logger,
+    // careful with this - there are no type safety here
+    LOGGER_INTERFACE(SimpleLogger),
     {
         .log = simple_logger_log,
     }

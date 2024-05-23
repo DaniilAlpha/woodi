@@ -1,24 +1,23 @@
 #ifndef WOODI_H
 #define WOODI_H
 
-#define WRAPPER(Self, interface_macro)                                         \
+#define WRAPPER(Self, INTERFACE)                                               \
     typedef struct Self Self;                                                  \
-    typedef struct Private##Self##Impl interface_macro(Self)                   \
-        Private##Self##Impl;                                                   \
+    typedef struct Private##Self##Impl INTERFACE(Self) Private##Self##Impl;    \
     struct Self {                                                              \
-        Private##Self##Impl const *vtbl;                                 \
-        void *self;                                                      \
+        Private##Self##Impl const *vtbl;                                       \
+        void *self;                                                            \
     }
 
-#define WRAP(Self, Wrapper, interface_macro, fn_name, ...)                     \
-    Wrapper(fn_name)(Self *const self) {                                       \
-        static struct interface_macro(Self) const vtbl = __VA_ARGS__;          \
+#define WRAP_BODY(Wrapper, INTERFACE_FOR_SELF, ...)                            \
+    {                                                                          \
+        static struct INTERFACE_FOR_SELF const vtbl = __VA_ARGS__;             \
         return (Wrapper                                                        \
         ){.vtbl = (Private##Wrapper##Impl *)&vtbl, .self = self};              \
     }                                                                          \
     void ___i_want_you_to_put_semicolon_here_please(void)
 
-#define wrapper_call(fn, wrapper, ...)                                         \
+#define WRAPPER_CALL(fn, wrapper, ...)                                         \
     (wrapper)->vtbl->fn((wrapper)->self, ##__VA_ARGS__)
 
 #endif
