@@ -34,7 +34,7 @@ int simple_logger_log(SimpleLogger *const self, char *const str) {
 
 // you declare a function, which body is provided by `WRAP_BODY` macro. you may
 // want to declare it in header and define in source or to define as `inline` in
-// header and declare as `extern` in source
+// header
 Logger simple_logger_ww_logger(SimpleLogger *const self) WRAP_BODY(
     Logger,
     // careful with this - there are no type safety here
