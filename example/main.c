@@ -5,7 +5,7 @@
 // defining a wrapper
 
 #define LOGGER_INTERFACE(Self)                                                 \
-    { int (*const log)(Self *const self, char *const str); }
+    { int (*const log)(Self *const self, char const *const str); }
 
 WRAPPER(Logger, LOGGER_INTERFACE);
 
@@ -24,7 +24,7 @@ void simple_logger_init(SimpleLogger *const self, FILE *file) {
 }
 void simple_logger_uninit(SimpleLogger *const self) { self->file = NULL; }
 
-int simple_logger_log(SimpleLogger *const self, char *const str) {
+int simple_logger_log(SimpleLogger *const self, char const *const str) {
     if (fputs(str, self->file) == EOF) return 1;
 
     return 0;
