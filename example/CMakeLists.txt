@@ -1,13 +1,14 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
+project(woodi-example LANGUAGES C)
 
-project(object_wrapper_example VERSION 1.0.0 LANGUAGES C)
 
-set(MAIN "main")
+### main ###
 
-set(SRC_DIR "./")
-set(INCLUDE_DIR "../")
+set(EXE "main")
+add_executable(${EXE} ./main.c)
 
-file(GLOB SRCS ${SRC_DIR}/*.c)
 
-add_executable(${MAIN} ${SRCS})
-target_include_directories(${MAIN} PRIVATE ${INCLUDE_DIR})
+### add library
+
+add_subdirectory(../ ${CMAKE_BINARY_DIR}/woodi)
+target_link_libraries(${EXE} woodi)
