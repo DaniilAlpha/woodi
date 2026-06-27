@@ -9,7 +9,10 @@
 WRAPPER(Logger, LOGGER_INTERFACE);
 
 // you may want to define a function, as a shorthand
-static inline int logger_log(Logger *const self, char const *const str) {
+// (the resulting wrapper is just two pointers, meaning it's better to pass it
+// by value to save yourself from the pointless headache of managing memory for
+// yet another struct)
+static inline int logger_log(Logger const self, char const *const str) {
     return WRAPPER_CALL(log, self, str);
 }
 
@@ -33,11 +36,10 @@ int simple_logger_log(SimpleLogger *const self, char const *const str) {
 // wrapping
 
 // you declare a function, which body is provided by `WRAP_BODY` macro. you may
-// want to declare it inside the header and define inside the source, or just to
-// define as `static inline` inside the header
+// want to declare it inside the header and define inside the source
 Logger simple_logger_ww_logger(SimpleLogger *const self) WRAP_BODY(
     Logger,
-    // be careful here - type safety is not provided in this block only
+    // be careful here - type safety is not provided in this block specifically
     LOGGER_INTERFACE(SimpleLogger),
     {
         .log = simple_logger_log,
@@ -46,9 +48,7 @@ Logger simple_logger_ww_logger(SimpleLogger *const self) WRAP_BODY(
 
 // usage
 
-void log_helloworld(Logger *const logger) {
-    logger_log(logger, "Hello world!");
-}
+void log_helloworld(Logger const logger) { logger_log(logger, "Hello world!"); }
 
 int main() {
     SimpleLogger simple_logger;
@@ -56,7 +56,7 @@ int main() {
 
     // any logger can be injected here which is pretty cool
     Logger logger = simple_logger_ww_logger(&simple_logger);
-    log_helloworld(&logger);
+    log_helloworld(logger);
 
     simple_logger_uninit(&simple_logger);
     // logger should not be used from here, as it's object got uninited

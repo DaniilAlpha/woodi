@@ -12,12 +12,16 @@
 #define WRAP_BODY(Wrapper, INTERFACE_FOR_SELF, ...)                            \
     {                                                                          \
         static struct INTERFACE_FOR_SELF const vtbl = __VA_ARGS__;             \
-        return (Wrapper                                                        \
+        return (                                                               \
+            Wrapper                                                            \
         ){.__vtbl = (Private##Wrapper##Impl *)&vtbl, ._self = self};           \
     }                                                                          \
     void ___i_want_you_to_put_semicolon_here_please(void)
 
 #define WRAPPER_CALL(fn, wrapper, ...)                                         \
-    (wrapper)->__vtbl->fn((wrapper)->_self, ##__VA_ARGS__)
+    (wrapper).__vtbl->fn((wrapper)._self, ##__VA_ARGS__)
+
+#define WRAPPERS_EQUAL(a, b)                                                   \
+    ((a).__vtbl == (b).__vtbl && (a)._self == (b)._self)
 
 #endif
