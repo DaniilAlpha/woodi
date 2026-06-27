@@ -1,27 +1,31 @@
 #ifndef WOODI_H
 #define WOODI_H
 
-#define WRAPPER(Self, INTERFACE)                                               \
-    typedef struct Self Self;                                                  \
-    typedef struct Private##Self##Impl INTERFACE(Self) Private##Self##Impl;    \
-    struct Self {                                                              \
-        Private##Self##Impl const *__vtbl;                                     \
+#define WRAPPER(_SELF_T, _INTERFACE)                                           \
+    typedef struct _SELF_T _SELF_T;                                            \
+    struct Internal__##_SELF_T##Impl _INTERFACE(_SELF_T);                      \
+    struct _SELF_T {                                                           \
+        struct Internal__##_SELF_T##Impl const *__vtbl;                        \
         void *_self;                                                           \
     }
 
-#define WRAP_BODY(Wrapper, INTERFACE_FOR_SELF, ...)                            \
+#define WRAP_BODY(_WRAPPER_T, _INTERFACE_FOR_SELF, ...)                        \
     {                                                                          \
-        static struct INTERFACE_FOR_SELF const vtbl = __VA_ARGS__;             \
-        return (                                                               \
-            Wrapper                                                            \
-        ){.__vtbl = (Private##Wrapper##Impl *)&vtbl, ._self = self};           \
+        static struct _INTERFACE_FOR_SELF const vtbl = __VA_ARGS__;            \
+        return (_WRAPPER_T){                                                   \
+            .__vtbl = (struct Internal__##_WRAPPER_T##Impl *)&vtbl,            \
+            ._self = self                                                      \
+        };                                                                     \
     }                                                                          \
     void ___i_want_you_to_put_semicolon_here_please(void)
 
-#define WRAPPER_CALL(fn, wrapper, ...)                                         \
-    (wrapper).__vtbl->fn((wrapper)._self, ##__VA_ARGS__)
+#define WRAPPER_CALL(_FN, _WRAPPER, ...)                                       \
+    (_WRAPPER).__vtbl->_FN((_WRAPPER)._self, ##__VA_ARGS__)
 
-#define WRAPPERS_EQUAL(a, b)                                                   \
-    ((a).__vtbl == (b).__vtbl && (a)._self == (b)._self)
+#define WRAPPERS_EQUAL(_WRAPPER_A, _WRAPPER_B)                                 \
+    ((_WRAPPER_A).__vtbl == (_WRAPPER_B).__vtbl &&                             \
+     (_WRAPPER_A)._self == (_WRAPPER_B)._self)
+
+#define WRAPPER_IS_NULL(_WRAPPER) (!(_WRAPPER).__vtbl && !(_WRAPPER)._self)
 
 #endif
